@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- https://stackoverflow.com/questions/12615169/is-there-any-way-to-wait-for-ajax-response-and-halt-execution/45509714#45509714 -->
+
+<head>
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/passphrase.css">
+  <meta charset="UTF-8">
+  <title>Main Page</title>
+
+</head>
+
+<body>
+  <div class="text-bar" style="display: flex; justify-content: flex-end">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="https://blog.ramgi.dev">Blog</a>
+  </div>
+  <h1></h1>
+
+  <div class="container">
+    </br>
+
+    <div class="row">
+      <div class="twelve columns">
+        <b>
+          <h1 style="font-size:5em"> Passphrase Generator</h1>
+        </b>
+      </div>
+    </div>
+
+
+
+    <form method="post" id="complexityForm">
+
+      <!-- https://stackoverflow.com/questions/14690621/arrange-multiple-checkboxes-like-a-grid-without-tables/14690892 -->
+      <!-- number of words -->
+      <div class="slidecontainer">
+        <label for="sliders">
+          Number of words: <span id="sliderValue">4</span>
+          <input type="range" min="3" max="8" value="4" class="sliderLength" id="rangeSlider">
+        </label>
+      </div>
+
+      <!-- Use of numbers in between words -->
+      <div>
+        <label for="number">
+
+          <div class="row">
+            <div class="six columns">
+              Include numbers :
+            </div>
+
+            <div class="six columns">
+              <input type="checkbox" id="number" checked>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <!-- uppercase -->
+      <div>
+        <label for="uppercase">
+          <div class="row">
+
+            <div class="six columns">
+              Capitalise first letter :
+            </div>
+
+            <div class="six columns">
+              <input type="checkbox" id="uppercase" checked>
+            </div>
+          </div>
+
+        </label>
+      </div>
+
+      <!-- special characters -->
+      <div>
+        <label class="switch">
+          <div class="row">
+
+            <div class="six columns">
+              Special characters :
+            </div>
+            <div class="six columns">
+              <input type="checkbox" id="symbol" checked>
+            </div>
+            </div>
+
+        </label>
+      </div>
+      <br><br>
+
+      <input type="submit" value="Generate Passphrase">
+
+    </form>
+
+    <br><br>
+
+    <div class="row">
+      <div class="twelve columns">
+        <h2 style="font-size:4em" id="finalPassphrase"> </h2>
+        <br>
+        <br>
+        <div class="row">
+          <button onclick="copyPassphrase()">Copy to Clipboard</button>
+        </div>
+
+
+
+
+        <script>
+          // display the current slider value text on load and on change
+          var slider = document.getElementById("rangeSlider");
+
+          document.getElementById("sliderValue").innerHTML = slider.value;
+          slider.oninput = function () {
+            document.getElementById("sliderValue").innerHTML = this.value;
+          }
+
+
+          var form = document.querySelector("#complexityForm")
+          form.onsubmit = function (evt) {
+            evt.preventDefault();
+            postRequirements();
+
+          };
+
+          function postRequirements() {
+            var numOfWordsVar = parseInt(document.getElementById("rangeSlider").value);
+            var numbersWantedVar = document.getElementById("number").checked;
+            var uppercaseWantedVar = document.getElementById("uppercase").checked;
+            var symbolWantedVar = document.getElementById("symbol").checked;
+
+            // console.log(numOfWordsVar, numbersWantedVar, uppercaseWantedVar)
+            fetch("/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                numOfWordsHeader: numOfWordsVar,
+                numbersWantedHeader: numbersWantedVar,
+                uppercaseWantedHeader: uppercaseWantedVar,
+                symbolWantedHeader: symbolWantedVar
+              }),
+            })
+              .then((resp) => resp.json())
+              .then(pw => document.getElementById('finalPassphrase').innerHTML = pw.Password);
+          }
+
+
+          function copyPassphrase() {
+            navigator.clipboard.writeText(document.getElementById("finalPassphrase").textContent).then(function () {
+              console.log('Async: Copying to clipboard was successful!');
+            }, function (err) {
+              console.error('Async: Could not copy text: ', err);
+            });
+          }
+        </script>
+</body>
+
+</html>
