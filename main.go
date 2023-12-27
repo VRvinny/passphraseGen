@@ -134,7 +134,9 @@ func main() {
 	router := NewRouter()
 
 	router.HandleFunc("/", rootMain).Methods("GET")
+
 	router.HandleFunc("/", genPassword).Methods("POST")
+	router.HandleFunc("/passGen/", genPassword).Methods("POST")
 
 	http.ListenAndServe(":8000", router)
 

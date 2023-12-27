@@ -4,10 +4,10 @@
 
 <head>
 
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/passphrase.css">
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="skeleton.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="passphrase.css">
   <meta charset="UTF-8">
   <title>Main Page</title>
 
@@ -137,7 +137,7 @@
             var symbolWantedVar = document.getElementById("symbol").checked;
 
             // console.log(numOfWordsVar, numbersWantedVar, uppercaseWantedVar)
-            fetch("/", {
+            fetch("/passGen", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
